@@ -2,6 +2,15 @@
 
 A witty, slightly sarcastic Telegram bot for group chat summarization. Built with Python and an OpenAI-compatible API, TLDRBot helps teams catch up on conversations with personality.
 
+This is [joaopat98/tldrbot](https://github.com/joaopat98/tldrbot), maintained by
+[João Patrício](https://github.com/joaopat98), and forked from
+[advaitbd/tldrbot](https://github.com/advaitbd/tldrbot).
+
+This fork adds Docker Compose deployment, public amd64/arm64 container images
+at `ghcr.io/joaopat98/tldrbot`, automated image publishing, and configurable
+OpenAI-compatible providers including OpenWebUI. The original bot and its
+existing features come from the upstream project and its contributors.
+
 ## Features
 
 ### Conversation Summarization (`/tldr`)
@@ -25,21 +34,10 @@ Drop a TikTok, Instagram Reel, or YouTube Shorts link and the bot automatically 
 ### Rate Limiting
 Each user gets 10 AI requests per day. The bot will let you know when you're running low (with attitude, of course).
 
-## Personality Examples
-
-**On /tldr:**
-> "Summary complete. I'm basically your group's unpaid intern at this point."
-
-**On @mention:**
-> "You rang? I was busy judging other chats."
-
-**On rate limit:**
-> "Whoa there, chatty! You've used me 10 times today. I need a break."
-
 ## Getting Started
 
 ### Prerequisites
-- Python 3.10+
+- Docker with the Compose plugin for container deployment, or Python 3.10+ for local installation
 - Telegram Bot Token (from [@BotFather](https://t.me/BotFather))
 - API key for OpenAI or an OpenAI-compatible provider
 
@@ -82,9 +80,11 @@ Compose command.
 
 #### Build from source
 
-Install Docker with the Compose plugin, then copy the example configuration:
+Clone this repository, then copy the example configuration:
 
 ```bash
+git clone https://github.com/joaopat98/tldrbot.git
+cd tldrbot
 cp .env.example .env
 # PowerShell: Copy-Item .env.example .env
 ```
@@ -115,7 +115,7 @@ daemon is stopped, start it with `sudo service docker start`. Check that
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/advaitbd/tldrbot.git
+git clone https://github.com/joaopat98/tldrbot.git
 cd tldrbot
 ```
 
@@ -125,12 +125,13 @@ python -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 ```
 
-3. Install dependencies:
+3. Install dependencies (and FFmpeg separately for video processing):
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Set environment variables:
+4. Set environment variables in your shell. Local Python execution does not
+automatically load `.env`; Docker Compose does.
 ```bash
 # Required
 export BOT_TOKEN="your_telegram_bot_token"
@@ -174,6 +175,7 @@ bot/
 | Command | Description | Rate Limited |
 |---------|-------------|--------------|
 | `/help` | Show help | No |
+| `/start` | Show help | No |
 | `/tldr [n]` | Summarize last n messages | Yes |
 | `@bot` mention | Reply with personality | Yes |
 | Auto-download | Detect & download videos | No |
@@ -189,6 +191,7 @@ bot/
 | `DAILY_LIMIT` | No | 10 | AI uses per user per day |
 | `MAX_MESSAGES` | No | 400 | Messages to store per chat |
 | `DATABASE_URL` | No | - | PostgreSQL URL for analytics |
+| `VIDEO_URL_PATTERNS` | No | TikTok, Instagram Reels, YouTube Shorts and youtu.be patterns | JSON array of regular expressions for video URL detection (local execution) |
 
 ### OpenWebUI and other compatible APIs
 
@@ -215,7 +218,9 @@ The bot sends Chat Completions requests using system/user messages and
 For a local server with authentication disabled, use a non-empty placeholder
 such as `OPENAI_API_KEY=unused`.
 
-Apply changes with `docker compose up -d --build`. Leave `OPENAI_BASE_URL`
+After changing `.env`, recreate the container with `docker compose up -d`
+(add `-f compose.image.yaml` before `up` if using that file). Add `--build`
+when you also changed the source in a local build. Leave `OPENAI_BASE_URL`
 unset to use OpenAI's default endpoint.
 
 ### Image publishing
@@ -232,8 +237,27 @@ workflow authenticates with `GITHUB_TOKEN`; no registry secret is needed.
 
 ## Contributing
 
-Contributions welcome! Feel free to submit a Pull Request.
+Report issues and submit pull requests to
+[joaopat98/tldrbot](https://github.com/joaopat98/tldrbot). Provider compatibility
+reports should include the provider software, model ID, and error details with
+credentials and private URLs removed.
+
+## Attribution
+
+TLDRBot originated in [advaitbd/tldrbot](https://github.com/advaitbd/tldrbot).
+Credit goes to [advaitbd](https://github.com/advaitbd) and the
+[upstream contributors](https://github.com/advaitbd/tldrbot/graphs/contributors)
+for the original Telegram bot, summarization and mention-reply features,
+video downloads, rate limiting, and plugin structure inherited by this fork.
+
+Docker deployment, GHCR publishing, and configurable API endpoint support are
+maintained in this fork. The bot uses
+[python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot),
+the [OpenAI Python client](https://github.com/openai/openai-python), and
+[yt-dlp](https://github.com/yt-dlp/yt-dlp), with FFmpeg for video processing.
 
 ## License
 
-MIT License - see LICENSE file for details.
+The upstream README states MIT licensing, but this repository currently has no
+`LICENSE` file and GitHub does not identify a license for the upstream project.
+The missing license text should be clarified with the upstream maintainer.
