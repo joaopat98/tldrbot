@@ -45,6 +45,43 @@ Each user gets 10 AI requests per day. The bot will let you know when you're run
 
 ### Docker Compose
 
+#### Run the published image
+
+Create a `compose.yaml` with the following service (also available in
+`compose.image.yaml`):
+
+```yaml
+services:
+  bot:
+    image: ghcr.io/joaopat98/tldrbot:latest
+    restart: unless-stopped
+    init: true
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN:?Set BOT_TOKEN in .env}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:?Set OPENAI_API_KEY in .env}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
+      AI_MODEL: ${AI_MODEL:-gpt-4o-mini}
+      DAILY_LIMIT: ${DAILY_LIMIT:-10}
+      MAX_MESSAGES: ${MAX_MESSAGES:-400}
+      DATABASE_URL: ${DATABASE_URL:-}
+```
+
+Create a private `.env` beside it with your Telegram token, provider API key,
+and model settings (see `.env.example` and the OpenWebUI section below), then run:
+
+```bash
+docker compose pull
+docker compose up -d
+docker compose logs -f bot
+```
+
+No source checkout or local build is needed. The image supports Linux amd64 and
+arm64. Run `docker compose pull && docker compose up -d` to update. If using
+`compose.image.yaml` from this repository, add `-f compose.image.yaml` to each
+Compose command.
+
+#### Build from source
+
 Install Docker with the Compose plugin, then copy the example configuration:
 
 ```bash
@@ -180,6 +217,18 @@ such as `OPENAI_API_KEY=unused`.
 
 Apply changes with `docker compose up -d --build`. Leave `OPENAI_BASE_URL`
 unset to use OpenAI's default endpoint.
+
+### Image publishing
+
+GitHub Actions tests and publishes the image to GHCR on pushes to `main`,
+`v*` version tags, and manual workflow runs. The default branch publishes
+`:latest`; each build also gets a `:sha-<short-commit>` tag. Version tags such
+as `v1.2.3` publish `:1.2.3` and `:1.2`. Use a version tag or image digest
+when you want to pin a deployment.
+
+When first publishing a fork, set the container package visibility to **Public**
+in GitHub's package settings so users can pull without authentication. The
+workflow authenticates with `GITHUB_TOKEN`; no registry secret is needed.
 
 ## Contributing
 
