@@ -4,6 +4,7 @@ import json
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+OPENAI_BASE_URL = os.environ.get("OPENAI_BASE_URL") or None
 AI_MODEL = os.environ.get("AI_MODEL", "gpt-4o-mini")
 DATABASE_URL = os.environ.get("DATABASE_URL")
 MAX_MESSAGES = int(os.environ.get("MAX_MESSAGES", "400"))

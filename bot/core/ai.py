@@ -49,9 +49,9 @@ Format your response as:
 
 
 class AIService:
-    def __init__(self, api_key: str | None, model: str = "gpt-4o-mini"):
+    def __init__(self, api_key: str | None, model: str = "gpt-4o-mini", base_url: str | None = None):
         self.model = model
-        self.client = OpenAI(api_key=api_key)
+        self.client = OpenAI(api_key=api_key, base_url=base_url or None)
     
     def get_summary(self, messages_text: str, num_messages: int) -> str:
         try:

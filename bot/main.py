@@ -26,7 +26,7 @@ def main():
         if init_database(config.DATABASE_URL):
             create_tables()
     
-    ai_service = AIService(config.OPENAI_API_KEY, config.AI_MODEL)
+    ai_service = AIService(config.OPENAI_API_KEY, config.AI_MODEL, base_url=config.OPENAI_BASE_URL)
     rate_limiter = RateLimiter(max_uses_per_day=config.DAILY_LIMIT)
     memory = MemoryStorage(max_messages=config.MAX_MESSAGES)
     
