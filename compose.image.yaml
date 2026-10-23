@@ -3,11 +3,5 @@ services:
     image: ghcr.io/joaopat98/tldrbot:latest
     restart: unless-stopped
     init: true
-    environment:
-      BOT_TOKEN: ${BOT_TOKEN:?Set BOT_TOKEN in .env}
-      OPENAI_API_KEY: ${OPENAI_API_KEY:?Set OPENAI_API_KEY in .env}
-      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
-      AI_MODEL: ${AI_MODEL:-gpt-4o-mini}
-      DAILY_LIMIT: ${DAILY_LIMIT:-10}
-      MAX_MESSAGES: ${MAX_MESSAGES:-400}
-      DATABASE_URL: ${DATABASE_URL:-}
+    env_file:
+      - .env

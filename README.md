@@ -54,18 +54,26 @@ services:
     image: ghcr.io/joaopat98/tldrbot:latest
     restart: unless-stopped
     init: true
-    environment:
-      BOT_TOKEN: ${BOT_TOKEN:?Set BOT_TOKEN in .env}
-      OPENAI_API_KEY: ${OPENAI_API_KEY:?Set OPENAI_API_KEY in .env}
-      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
-      AI_MODEL: ${AI_MODEL:-gpt-4o-mini}
-      DAILY_LIMIT: ${DAILY_LIMIT:-10}
-      MAX_MESSAGES: ${MAX_MESSAGES:-400}
-      DATABASE_URL: ${DATABASE_URL:-}
+    env_file:
+      - .env
 ```
 
-Create a private `.env` beside it with your Telegram token, provider API key,
-and model settings (see `.env.example` and the OpenWebUI section below), then run:
+Create a private `.env` beside `compose.yaml`:
+
+```dotenv
+BOT_TOKEN=your_telegram_bot_token
+OPENAI_API_KEY=your_provider_api_key
+AI_MODEL=your_model_id
+# For OpenWebUI or another compatible provider; omit for OpenAI:
+# OPENAI_BASE_URL=https://openwebui.example.test/api
+```
+
+Replace the placeholders with your settings and enable `OPENAI_BASE_URL` if
+using a custom provider. Compose passes the variables from this file into the
+container. Optional settings use the bot's defaults when omitted; see
+`.env.example` and the configuration table below. Keep `.env` private.
+
+Start the bot:
 
 ```bash
 docker compose pull
