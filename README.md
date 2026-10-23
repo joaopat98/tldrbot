@@ -258,6 +258,5 @@ the [OpenAI Python client](https://github.com/openai/openai-python), and
 
 ## License
 
-The upstream README states MIT licensing, but this repository currently has no
-`LICENSE` file and GitHub does not identify a license for the upstream project.
-The missing license text should be clarified with the upstream maintainer.
+Licensed under the [MIT License](LICENSE). Copyright notices credit this
+fork's maintainer and the upstream authors and contributors.
